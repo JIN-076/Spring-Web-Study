@@ -1,0 +1,2 @@
+com/example/Hellospring/HelloSpringApplicationTests.java
+ com.example.Hellospring.HelloSpringApplicationTests
