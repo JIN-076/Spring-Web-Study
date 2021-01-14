@@ -6,9 +6,11 @@ import com.example.Hellospring.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class MemberServices {
 
     private final MemberRepository memberRepository;
@@ -20,11 +22,19 @@ public class MemberServices {
     /* 회원가입 */
     public Long join(Member member) {
 
-        // 같은 이름이 있는 중복 회원 x
-        validateDuplicateMember(member);
+        long start = System.currentTimeMillis();
 
-        memberRepository.save(member);
-        return member.getId();
+        try {
+            // 같은 이름이 있는 중복 회원 x
+            validateDuplicateMember(member);
+
+            memberRepository.save(member);
+            return member.getId();
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            System.out.println("join = " + timeMs + "ms");
+        }
     }
 
     private void validateDuplicateMember(Member member) {
@@ -36,7 +46,16 @@ public class MemberServices {
 
     /* 전체 회원 조회 */
     public List<Member> findMembers() {
-        return memberRepository.findAll();
+
+        long start = System.currentTimeMillis();
+
+        try {
+            return memberRepository.findAll();
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            System.out.println("findMembers = " + timeMs + "ms");
+        }
     }
 
     public Optional<Member> findOne(Long memberId) {
